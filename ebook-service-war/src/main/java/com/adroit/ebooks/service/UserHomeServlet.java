@@ -1,6 +1,8 @@
 package com.adroit.ebooks.service;
 
+import java.io.File;
 import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -18,7 +20,8 @@ public class UserHomeServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.getWriter().append("User servlet responded : ").append(request.getContextPath());
+		File xmlDBFile = (File) getServletContext().getAttribute("xmlDBFile");
+		System.out.println("ebook200 from userservlet xmlDBFile : " + xmlDBFile.getAbsolutePath());		
 		response.sendRedirect("search.html");
 	}
 

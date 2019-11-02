@@ -17,7 +17,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-import com.adroit.ebooks.pdf.PDFAPI;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.Logger;
 
 /**
  * Servlet implementation class UploadServlet
@@ -26,12 +28,50 @@ import com.adroit.ebooks.pdf.PDFAPI;
 @MultipartConfig
 public class UploadServlet extends HttpServlet {
 	private static final String PART_NAME = "kpUpload";
+	private static final String INVENTORY_FILE = "inventory.xml";
 	private static final long serialVersionUID = 1L;
+	private static final Logger LOG = (Logger) LoggerFactory.getLogger(UploadServlet.class);
 
 	/**
 	 * Default constructor. 
 	 */
 	public UploadServlet() {
+	}
+	
+	@Override
+	public void init() throws ServletException {
+		// get user home
+		String userHomeDir = System.getProperty("user.home");
+		String workingDir = userHomeDir.concat(File.separator).concat(".easyeb");
+		File workingDirfile = new File(workingDir);
+		LOG.debug("ebook200 : workingDir " + workingDir);
+		if(workingDirfile.exists()) {
+			LOG.debug("ebook200 : working dir exists");
+		} else {
+			boolean createdOrNot = workingDirfile.mkdir();
+			LOG.debug("ebook200 : working dir does not exist. created" + createdOrNot);
+		}
+		
+		// extract xml from war
+		InputStream dbFileIS = this.getClass().getClassLoader().getResourceAsStream(INVENTORY_FILE);
+		FileOutputStream fos;
+		File xmlDBFile = new File(workingDir.concat(File.separator).concat(INVENTORY_FILE));
+		// check if xml exists
+		if(!xmlDBFile.exists()) {
+			// if it doesn't, copy it to user-home
+			LOG.debug("ebook200 : xmlDBFile does not exist. creating now");
+			try {
+				fos = new FileOutputStream(xmlDBFile);
+				dbFileIS.transferTo(fos);
+				LOG.debug("ebook200 : xmlDBFile created");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			LOG.debug("ebook200 : xmlDBFile exists already");
+		}
+		// TODO make it available to other servlets
+		getServletContext().setAttribute("xmlDBFile", xmlDBFile);
 	}
 
 	/**
@@ -45,18 +85,18 @@ public class UploadServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("ebook100 ============Receiving file");
+		LOG.debug("ebook100 ============Receiving file");
 
 		// Retrieves <input type="file" name="file" multiple="true">
-		System.out.println("ebook100 ============Request parts : " + request.getParts().size());
+		LOG.debug("ebook100 ============Request parts : " + request.getParts().size());
 		List<Part> fileParts = request.getParts().stream().filter(new Predicate<Part>() {
 			@Override
 			public boolean test(Part part) {
-				System.out.println("ebook100 ============part.getName()" + part.getName());
+				LOG.debug("ebook100 ============part.getName()" + part.getName());
 				return PART_NAME.equals(part.getName());
 			}
 		}).collect(Collectors.toList());
-		System.out.println("ebook100 ============fileParts : " + fileParts.size());
+		LOG.debug("ebook100 ============fileParts : " + fileParts.size());
 
 		if(!(fileParts.size() >= 1)) {
 			response.getWriter().append("File upload failed");
@@ -65,19 +105,19 @@ public class UploadServlet extends HttpServlet {
 		for (Part filePart : fileParts) {
 			String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // MSIE fix.
 			String tempDir = String.valueOf(request.getServletContext().getAttribute("javax.servlet.context.tempdir"));
-			System.out.println("ebook100 ============FileName of uploaded file : " + fileName);
+			LOG.debug("ebook100 ============FileName of uploaded file : " + fileName);
 			File uploadedFile = new File(tempDir.concat(File.separator).concat(fileName));
 
 			InputStream fileIs = filePart.getInputStream();
 			FileOutputStream fos = new FileOutputStream(uploadedFile);
 			fileIs.transferTo(fos);
-			System.out.println("ebook100 Uploaded file path : " + uploadedFile.getAbsolutePath());
+			LOG.debug("ebook100 Uploaded file path : " + uploadedFile.getAbsolutePath());
 
 			// TODO Generate SKU
 			// TODO Update XML
 			
 //			File shortenedPDF = PDFAPI.createSample(uploadedFile, fileName, tempDir);
-//			System.out.println("ebook1001 shortenedPDF file path : " + shortenedPDF.getAbsolutePath());
+//			LOG.debug("ebook1001 shortenedPDF file path : " + shortenedPDF.getAbsolutePath());
 
 			// TODO Save both files to DB
 			response.getWriter().append("File uploaded successfully : " + fileName);
