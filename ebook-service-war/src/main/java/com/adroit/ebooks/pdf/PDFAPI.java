@@ -42,10 +42,11 @@ public class PDFAPI {
 				document.close();
 				
 				return sampleFile;
+			} else {
+				System.out.println("WARN ebook1001 ============ Couldn't create sample file");
 			}
 		} catch (IOException | DocumentException e) {
 			e.printStackTrace();
-			// TODO LOG
 		}
 		return sampleFile;
 	}

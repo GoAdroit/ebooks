@@ -73,15 +73,14 @@ public class UploadServlet extends HttpServlet {
 			fileIs.transferTo(fos);
 			System.out.println("ebook100 Uploaded file path : " + uploadedFile.getAbsolutePath());
 
-			// TODO Use EHCache
-
-			// TODO Create a shortened version of the PDF
-			File shortenedPDF = PDFAPI.createSample(uploadedFile, fileName, tempDir);
-			System.out.println("ebook100 shortenedPDF file path : " + shortenedPDF.getAbsolutePath());
+			// TODO Generate SKU
+			// TODO Update XML
+			
+//			File shortenedPDF = PDFAPI.createSample(uploadedFile, fileName, tempDir);
+//			System.out.println("ebook1001 shortenedPDF file path : " + shortenedPDF.getAbsolutePath());
 
 			// TODO Save both files to DB
-
-			response.getWriter().append("File uploaded successfully : " + fileName + "\n");
+			response.getWriter().append("File uploaded successfully : " + fileName);
 		}
 	}
 

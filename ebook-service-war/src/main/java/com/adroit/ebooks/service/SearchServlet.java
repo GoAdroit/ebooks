@@ -26,21 +26,27 @@ public class SearchServlet extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.getWriter().append("What to search: ").append(request.getParameter("bname"));
+		response.setContentType("text/html");
 		String bookName = request.getParameter("bname");
-		System.out.println("bname param : " + bookName);
 		String tempDir = String.valueOf(request.getServletContext().getAttribute("javax.servlet.context.tempdir"));
 		ISearchBook bookSearch = new SearchBookImpl("drive", tempDir);
 		String[] bookNames = bookSearch.searchResults(bookName);
 		
 		StringBuffer responseString = new StringBuffer();
-		responseString.append("\nFound ").append(" results :");
+		responseString.append("<br><h1>EBooks matching ").append(bookName).append("</h1><br>");
+		responseString.append("<table>");
+		responseString.append("<tr>");
+		responseString.append("<th>Title</th>");
+		responseString.append("<th>Sample</th>");
+		responseString.append("<th>Buy</th>");
 		for(String book : bookNames) {
-			responseString.append("\n").append(book);
+			responseString.append("<tr>");
+			responseString.append("<td>").append(book).append("</td>");
+			responseString.append("<td>").append("Sample").append("</td>");
+			responseString.append("<td>").append("Buy").append("</td>");
+			responseString.append("</tr>");
 		}
-		
+		responseString.append("</table>");
 		response.getWriter().append(responseString.toString());
-		
 	}
-
 }
