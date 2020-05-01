@@ -1,5 +1,6 @@
 package com.adroit.ebooks.service;
 
+import java.io.File;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -28,8 +29,8 @@ public class SearchServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");
 		String bookName = request.getParameter("bname");
-		String tempDir = String.valueOf(request.getServletContext().getAttribute("javax.servlet.context.tempdir"));
-		ISearchBook bookSearch = new SearchBookImpl("drive", tempDir);
+		String xmlFilesDBDir = new File(String.valueOf(getServletContext().getAttribute("xmlDBFile"))).getParent();
+		ISearchBook bookSearch = new SearchBookImpl("drive", xmlFilesDBDir);
 		String[] bookNames = bookSearch.searchResults(bookName);
 		
 		StringBuffer responseString = new StringBuffer();

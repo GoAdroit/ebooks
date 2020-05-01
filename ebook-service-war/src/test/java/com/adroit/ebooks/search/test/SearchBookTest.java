@@ -1,5 +1,5 @@
 package com.adroit.ebooks.search.test;
-
+/*
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -22,12 +22,11 @@ class SearchBookTest {
 	@Test
 	void testSearchResults() {
 		ISearchBook bookSearch = new SearchBookImpl(searchType, tempDirPath);
-		String[] bookSearchResult = bookSearch.searchResults("fda");
-		System.out.println(bookSearchResult.length);
+		String[] bookSearchResult = bookSearch.searchResults("config");
 		for(String fileName : bookSearchResult) {
-			System.out.println(fileName);
+			System.out.println("Found : " + fileName);
 		}
 		assertNotNull(bookSearchResult);
 	}
 
-}
+}*/
