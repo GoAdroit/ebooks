@@ -21,7 +21,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.LoggerFactory;
 
-import com.adroit.ebooks.pdf.PDFAPI;
+import com.adroit.ebooks.pdf.PdfApiItext;
 
 import ch.qos.logback.classic.Logger;
 
@@ -86,7 +86,7 @@ public class UploadServlet extends HttpServlet {
 				// TODO Update XML
 
 				// shorten file
-				PDFAPI.createSample(uploadedFile);
+//				PDFAPI.createSample(uploadedFile);
 
 				// TODO Save both files to DB
 				LOG.debug("File uploaded successfully");

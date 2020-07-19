@@ -14,14 +14,18 @@ public class PDFAPITest {
 
 	@Test
 	static void testCreateSample() {
-		File originalPDFFile = new File("/Users/praku/Downloads/Kannada-Calander_2020.pdf");
+		File originalPDFFile = new File("/Users/praku/.easyeb/d2-config.pdf");
 		System.out.println("Base name : " + FilenameUtils.getBaseName(originalPDFFile.getAbsolutePath()));
 		System.out.println("File name from utils : " + FilenameUtils.getName(originalPDFFile.getAbsolutePath()));
 		System.out.println("File name  : " + originalPDFFile.getName());
 		System.out.println("Base name from File name  : " + FilenameUtils.getBaseName(originalPDFFile.getName()));
 		
-
-		File sampleFile = PDFAPI.createSample(originalPDFFile);
+		PdfApiItext pdfApiItext = new PdfApiItext();
+//		File sampleFile = pdfApiItext.createSample(originalPDFFile);
+		
+		PdfApiApache pdfApiApache = new PdfApiApache();
+		File sampleFile = pdfApiItext.createSample(originalPDFFile);
+		
 		System.out.println(sampleFile.getAbsolutePath());
 	}
 	
